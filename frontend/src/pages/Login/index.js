@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: '100vh',
-    backgroundImage: 'linear-gradient(to bottom right, #7986cb, #3f51b5)', // Gradiente de fundo moderno
+    backgroundImage: 'linear-gradient(to bottom right, #400fa3, #8c52ff)', // Gradiente de fundo moderno
     padding: theme.spacing(4),
   },
   container: {
