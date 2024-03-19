@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
   },
   logo: {
     width: 100,
-    height: 'auto',
+    height: '120',
     marginBottom: theme.spacing(2),
   },
   form: {
