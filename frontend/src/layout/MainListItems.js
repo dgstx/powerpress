@@ -3,7 +3,7 @@ import { Link as RouterLink } from "react-router-dom";
 
 import {
     Badge,
-    List,
+    Divider,
     ListItem,
     ListItemIcon,
     ListItemText,
@@ -34,24 +34,16 @@ import { Can } from "../components/Can";
 
 const useStyles = makeStyles(theme => ({
     icon: {
-        color: theme.palette.secondary.main,
-        fontSize: 20 // Aumento o tamanho dos ícones para evitar efeito pixelizado
+        color: theme.palette.secondary.main
     },
-    listItem: {
-        backgroundColor: theme.palette.background.default,
-        borderRadius: 7, // Diminuí o raio de borda
-        marginBottom: 4, // Diminuí o espaçamento entre os itens
-        boxShadow: "0 1px 2px rgba(0, 0, 0, 0.1)" // Diminuí a sombra
+    li: {
+        backgroundColor: theme.palette.menuItens.main
     },
-    listItemText: {
-        fontWeight: 500,
-        fontSize: 14
+    sub: {
+        backgroundColor: theme.palette.sub.main
     },
-    subheader: {
-        fontWeight: 600,
-        fontSize: 16,
-        marginTop: 6,
-        marginBottom: 4 // Diminuí o espaçamento abaixo do subheader
+    divider: {
+        backgroundColor: theme.palette.divide.main
     }
 }));
 
@@ -61,31 +53,23 @@ function ListItemLink(props) {
 
     if (to) {
         return (
-            <ListItem
-                button
-                component={RouterLink}
-                to={to}
-                className={`${classes.listItem} ${className}`}
-            >
-                {icon ? <ListItemIcon className={classes.icon}>{icon}</ListItemIcon> : null}
-                <ListItemText primary={primary} className={classes.listItemText} />
-            </ListItem>
+            <li className={classes.li}>
+                <ListItem button component={RouterLink} to={to} className={className}>
+                    {icon ? <ListItemIcon className={classes.icon}>{icon}</ListItemIcon> : null}
+                    <ListItemText primary={primary} />
+                </ListItem>
+            </li>
         );
     }
 
     if (href) {
         return (
-            <ListItem
-                button
-                component="a"
-                href={href}
-                className={`${classes.listItem} ${className}`}
-                target="_blank"
-                rel="noopener noreferrer"
-            >
-                {icon ? <ListItemIcon className={classes.icon}>{icon}</ListItemIcon> : null}
-                <ListItemText primary={primary} className={classes.listItemText} />
-            </ListItem>
+            <li className={classes.li}>
+                <ListItem button component="a" href={href} className={className} target="_blank" rel="noopener noreferrer">
+                    {icon ? <ListItemIcon className={classes.icon}>{icon}</ListItemIcon> : null}
+                    <ListItemText primary={primary} />
+                </ListItem>
+            </li>
         );
     }
 
@@ -122,97 +106,92 @@ const MainListItems = (props) => {
     }, [whatsApps]);
 
     return (
-    <div onClick={drawerClose}>
-            <List style={{ overflowY: 'auto', maxHeight: 'calc(100vh - 64px)' }}>
-                <ListSubheader inset className={classes.subheader}>
-                    Atendimento
-                </ListSubheader>
-                <ListItemLink to="/" primary="Dashboard" icon={<DashboardOutlined />} />
-                <ListItemLink
-                    to="/tickets"
-                    primary={i18n.t("mainDrawer.listItems.tickets")}
-                    icon={<WhatsApp />}
-                />
-                <ListItemLink
-                    to="/contacts"
-                    primary={i18n.t("mainDrawer.listItems.contacts")}
-                    icon={<ContactPhoneOutlined />}
-                />
-                <ListItemLink
-                    to="/quickAnswers"
-                    primary={i18n.t("mainDrawer.listItems.quickAnswers")}
-                    icon={<QuestionAnswerOutlined />}
-                />
-                <ListItemLink
-                    to="/tags"
-                    primary={i18n.t("mainDrawer.listItems.tags")}
-                    icon={<LocalOffer />}
-                />
-
-                <ListSubheader inset className={classes.subheader}>
-                    {i18n.t("mainDrawer.listItems.administration")}
-                </ListSubheader>
-                <Can
-                    role={user.profile}
-                    perform="drawer-admin-items:view"
-                    yes={() => (
-                        <>
-                            <ListItemLink
-                                to="/connections"
-                                primary={i18n.t("mainDrawer.listItems.connections")}
-                                icon={
-                                    <Badge
-                                        badgeContent={connectionWarning ? "!" : 0}
-                                        color="error"
-                                        overlap="rectangular"
-                                    >
-                                        <SyncAlt />
-                                    </Badge>
-                                }
-                            />
-                            <ListItemLink
-                                to="/users"
-                                primary={i18n.t("mainDrawer.listItems.users")}
-                                icon={<PeopleAltOutlined />}
-                            />
-                            <ListItemLink
-                                to="/queues"
-                                primary={i18n.t("mainDrawer.listItems.queues")}
-                                icon={<AccountTreeOutlined />}
-                            />
-                            <ListItemLink
-                                to="/Integrations"
-                                primary={i18n.t("mainDrawer.listItems.integrations")}
-                                icon={<DeveloperModeOutlined />}
-                            />
-                            <ListItemLink
-                                to="/settings"
-                                primary={i18n.t("mainDrawer.listItems.settings")}
-                                icon={<SettingsOutlined />}
-                            />
-                        </>
-                    )}
-                />
-
-                <ListSubheader inset className={classes.subheader}>
-                    {i18n.t("mainDrawer.listItems.apititle")}
-                </ListSubheader>
-                <ListItemLink
-                    to="/api"
-                    primary={i18n.t("mainDrawer.listItems.api")}
-                    icon={<Code />}
-                />
-                <ListItemLink
-                    href="https://docs.meuhub.com.br/categoria/wasap/"
-                    primary={i18n.t("mainDrawer.listItems.apidocs")}
-                    icon={<MenuBook />}
-                />
-                <ListItemLink
-                    to="/apikey"
-                    primary={i18n.t("mainDrawer.listItems.apikey")}
-                    icon={<VpnKeyRounded />}
-                />
-            </List>
+        <div onClick={drawerClose}>
+            <ListItemLink
+                to="/"
+                primary="Dashboard"
+                icon={<DashboardOutlined />}
+            />
+            <ListItemLink
+                to="/tickets"
+                primary={i18n.t("mainDrawer.listItems.tickets")}
+                icon={<WhatsApp />}
+            />
+            <ListItemLink
+                to="/contacts"
+                primary={i18n.t("mainDrawer.listItems.contacts")}
+                icon={<ContactPhoneOutlined />}
+            />
+            <ListItemLink
+                to="/quickAnswers"
+                primary={i18n.t("mainDrawer.listItems.quickAnswers")}
+                icon={<QuestionAnswerOutlined />}
+            />
+            <ListItemLink
+                to="/tags"
+                primary={i18n.t("mainDrawer.listItems.tags")}
+                icon={<LocalOffer />}
+            />
+            <Can
+                role={user.profile}
+                perform="drawer-admin-items:view"
+                yes={() => (
+                    <>
+                        <Divider className={classes.divider} />
+                        <ListSubheader inset className={classes.sub}>
+                            {i18n.t("mainDrawer.listItems.administration")}
+                        </ListSubheader>
+                        <ListItemLink
+                            to="/connections"
+                            primary={i18n.t("mainDrawer.listItems.connections")}
+                            icon={
+                                <Badge badgeContent={connectionWarning ? "!" : 0} color="error" overlap="rectangular" >
+                                    <SyncAlt />
+                                </Badge>
+                            }
+                        />
+                        <ListItemLink
+                            to="/users"
+                            primary={i18n.t("mainDrawer.listItems.users")}
+                            icon={<PeopleAltOutlined />}
+                        />
+                        <ListItemLink
+                            to="/queues"
+                            primary={i18n.t("mainDrawer.listItems.queues")}
+                            icon={<AccountTreeOutlined />}
+                        />
+                        <ListItemLink
+                            to="/Integrations"
+                            primary={i18n.t("mainDrawer.listItems.integrations")}
+                            icon={<DeveloperModeOutlined />}
+                        />
+                        <ListItemLink
+                            to="/settings"
+                            primary={i18n.t("mainDrawer.listItems.settings")}
+                            icon={<SettingsOutlined />}
+                        />
+                        <Divider className={classes.divider} />
+                        <ListSubheader inset className={classes.sub}>
+                            {i18n.t("mainDrawer.listItems.apititle")}
+                        </ListSubheader>
+                        <ListItemLink
+                            to="/api"
+                            primary={i18n.t("mainDrawer.listItems.api")}
+                            icon={<Code />}
+                        />
+                        <ListItemLink
+                            href="https://docs.meuhub.com.br/categoria/wasap/"
+                            primary={i18n.t("mainDrawer.listItems.apidocs")}
+                            icon={<MenuBook />}
+                        />
+                        <ListItemLink
+                            to="/apikey"
+                            primary={i18n.t("mainDrawer.listItems.apikey")}
+                            icon={<VpnKeyRounded />}
+                        />
+                    </>
+                )}
+            />
         </div>
     );
 };
