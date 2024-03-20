@@ -250,8 +250,11 @@ const messages = {
           name: "Nome",
           color: "Cor",
           greetingMessage: "Mensagem de saudação",
-          startWork: "Abertura",
-          endWork: "Fechamento",
+          greetingMessage: "Mensagem de saudação",
+          startWorkMorning: "Abertura Manhã", // novo
+          endWorkMorning: "Fechamento Manhã", // novo
+          startWorkAfternoon: "Abertura Tarde", // novo
+          endWorkAfternoon: "Fechamento Tarde", // novo
           absenceMessage: "Mensagem de ausência",
         },
         buttons: {
@@ -429,8 +432,10 @@ const messages = {
           color: "Cor",
           greeting: "Mensagem de saudação",
           actions: "Ações",
-          startWork: "Abertura",
-          endWork: "Fechamento",
+          startWorkMorning: "Abertura Manhã", // alterado
+          endWorkMorning: "Fechamento (Manhã", // alterado
+          startWorkAfternoon: "Abertura Tarde", // novo
+          endWorkAfternoon: "Fechamento Tarde", // novo
         },
         buttons: {
           add: "Adicionar setor",
