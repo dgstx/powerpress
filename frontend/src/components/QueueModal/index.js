@@ -72,8 +72,10 @@ const QueueSchema = Yup.object().shape({
 		.required("Required"),
 	color: Yup.string().min(3, "Too Short!").max(9, "Too Long!").required(),
 	greetingMessage: Yup.string(),
-	startWork: Yup.string(),
-	endWork: Yup.string(),
+	startWorkMorning: Yup.string(),
+	endWorkMorning: Yup.string(),
+	startWorkAfternoon: Yup.string(),
+	endWorkAfternoon: Yup.string(),
 	absenceMessage: Yup.string()
 });
 
@@ -84,8 +86,10 @@ const QueueModal = ({ open, onClose, queueId }) => {
 		name: "",
 		color: "",
 		greetingMessage: "",
-		startWork: "",
-		endWork: "",
+		startWorkMorning: "",
+		endWorkMorning: "",
+		startWorkAfternoon: "",
+		endWorkAfternoon: "",
 		absenceMessage: ""
 	};
 
@@ -93,8 +97,10 @@ const QueueModal = ({ open, onClose, queueId }) => {
 	const [queue, setQueue] = useState(initialState);
 	const greetingRef = useRef();
 	const absenceRef = useRef();
-	const startWorkRef = useRef();
-	const endWorkRef = useRef();
+	const startWorkMorningRef = useRef();
+	const endWorkMorningRef = useRef();
+	const startWorkAfternoonRef = useRef();
+	const endWorkAfternoonRef = useRef();
 
 	useEffect(() => {
 		(async () => {
@@ -114,8 +120,10 @@ const QueueModal = ({ open, onClose, queueId }) => {
 				name: "",
 				color: "",
 				greetingMessage: "",
-				startWork: "",
-				endWork: "",
+				startWorkMorning: "",
+				endWorkMorning: "",
+				startWorkAfternoon: "",
+				endWorkAfternoon: "",
 				absenceMessage: ""
 			});
 		};
@@ -239,11 +247,11 @@ const QueueModal = ({ open, onClose, queueId }) => {
 								<form className={classes.container} noValidate>
 									<Field
 										as={TextField}
-										label={i18n.t("queueModal.form.startWork")}
+										label={i18n.t("queueModal.form.startWorkMorning")}
 										type="time"
 										ampm={false}
 										defaultValue="08:00"
-										inputRef={startWorkRef}
+										inputRef={startWorkMorningRef}
 										InputLabelProps={{
 											shrink: true,
 										}}
@@ -251,12 +259,12 @@ const QueueModal = ({ open, onClose, queueId }) => {
 											step: 600, // 5 min
 										}}
 										fullWidth
-										name="startWork"
+										name="startWorkMorning"
 										error={
-											touched.startWork && Boolean(errors.startWork)
+											touched.startWorkMorning && Boolean(errors.startWorkMorning)
 										}
 										helperText={
-											touched.startWork && errors.startWork
+											touched.startWorkMorning && errors.startWorkMorning
 										}
 										variant="outlined"
 										margin="dense"
@@ -264,11 +272,11 @@ const QueueModal = ({ open, onClose, queueId }) => {
 									/>
 									<Field
 										as={TextField}
-										label={i18n.t("queueModal.form.endWork")}
+										label={i18n.t("queueModal.form.endWorkMorning")}
 										type="time"
 										ampm={false}
-										defaultValue="18:00"
-										inputRef={endWorkRef}
+										defaultValue="12:00"
+										inputRef={endWorkMorningRef}
 										InputLabelProps={{
 											shrink: true,
 										}}
@@ -276,12 +284,62 @@ const QueueModal = ({ open, onClose, queueId }) => {
 											step: 600, // 5 min
 										}}
 										fullWidth
-										name="endWork"
+										name="endWorkMorning"
 										error={
-											touched.endWork && Boolean(errors.endWork)
+											touched.endWorkMorning && Boolean(errors.endWorkMorning)
 										}
 										helperText={
-											touched.endWork && errors.endWork
+											touched.endWorkMorning && errors.endWorkMorning
+										}
+										variant="outlined"
+										margin="dense"
+										className={classes.textField}
+									/>
+									<Field
+										as={TextField}
+										label={i18n.t("queueModal.form.startWorkAfternoon")}
+										type="time"
+										ampm={false}
+										defaultValue="13:00"
+										inputRef={startWorkAfternoonRef}
+										InputLabelProps={{
+											shrink: true,
+										}}
+										inputProps={{
+											step: 600, // 5 min
+										}}
+										fullWidth
+										name="startWorkAfternoon"
+										error={
+											touched.startWorkAfternoon && Boolean(errors.startWorkAfternoon)
+										}
+										helperText={
+											touched.startWorkAfternoon && errors.startWorkAfternoon
+										}
+										variant="outlined"
+										margin="dense"
+										className={classes.textField}
+									/>
+									<Field
+										as={TextField}
+										label={i18n.t("queueModal.form.endWorkAfternoon")}
+										type="time"
+										ampm={false}
+										defaultValue="18:00"
+										inputRef={endWorkAfternoonRef}
+										InputLabelProps={{
+											shrink: true,
+										}}
+										inputProps={{
+											step: 600, // 5 min
+										}}
+										fullWidth
+										name="endWorkAfternoon"
+										error={
+											touched.endWorkAfternoon && Boolean(errors.endWorkAfternoon)
+										}
+										helperText={
+											touched.endWorkAfternoon && errors.endWorkAfternoon
 										}
 										variant="outlined"
 										margin="dense"

@@ -217,10 +217,16 @@ const Queues = () => {
                 {i18n.t("queues.table.greeting")}
               </TableCell>
               <TableCell align="center">
-                {i18n.t("queues.table.startWork")}
+                {i18n.t("queues.table.startWorkMorning")}
               </TableCell>
               <TableCell align="center">
-                {i18n.t("queues.table.endWork")}
+                {i18n.t("queues.table.endWorkMorning")}
+              </TableCell>
+              <TableCell align="center">
+                {i18n.t("queues.table.startWorkAfternoon")}
+              </TableCell>
+              <TableCell align="center">
+                {i18n.t("queues.table.endWorkAfternoon")}
               </TableCell>
               <TableCell align="center">
                 {i18n.t("queues.table.actions")}
@@ -257,8 +263,10 @@ const Queues = () => {
                       </Typography>
                     </div>
                   </TableCell>
-                  <TableCell align="center">{queue.startWork}</TableCell>
-                  <TableCell align="center">{queue.endWork}</TableCell>
+                  <TableCell align="center">{queue.startWorkMorning}</TableCell>
+                  <TableCell align="center">{queue.endWorkMorning}</TableCell>
+                  <TableCell align="center">{queue.startWorkAfternoon}</TableCell>
+                  <TableCell align="center">{queue.endWorkAfternoon}</TableCell>
                   <TableCell align="center">
                     <IconButton
                       size="small"

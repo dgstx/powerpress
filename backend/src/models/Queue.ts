@@ -1,18 +1,6 @@
-import {
-  Table,
-  Column,
-  CreatedAt,
-  UpdatedAt,
-  Model,
-  PrimaryKey,
-  AutoIncrement,
-  AllowNull,
-  Unique,
-  BelongsToMany
-} from "sequelize-typescript";
+import { Table, Column, CreatedAt, UpdatedAt, Model, PrimaryKey, AutoIncrement, AllowNull, Unique, BelongsToMany } from "sequelize-typescript";
 import User from "./User";
 import UserQueue from "./UserQueue";
-
 import Whatsapp from "./Whatsapp";
 import WhatsappQueue from "./WhatsappQueue";
 
@@ -37,10 +25,16 @@ class Queue extends Model<Queue> {
   greetingMessage: string;
 
   @Column
-  startWork: string;
+  startWorkMorning: string; // Novo campo para início do turno da manhã
 
   @Column
-  endWork: string;
+  endWorkMorning: string; // Novo campo para fim do turno da manhã
+
+  @Column
+  startWorkAfternoon: string; // Novo campo para início do turno da tarde
+
+  @Column
+  endWorkAfternoon: string; // Novo campo para fim do turno da tarde
 
   @Column
   absenceMessage: string;
