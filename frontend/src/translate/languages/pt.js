@@ -251,10 +251,10 @@ const messages = {
           color: "Cor",
           greetingMessage: "Mensagem de saudação",
           greetingMessage: "Mensagem de saudação",
-          startWorkMorning: "Abertura Manhã", // novo
-          endWorkMorning: "Fechamento Manhã", // novo
-          startWorkAfternoon: "Abertura Tarde", // novo
-          endWorkAfternoon: "Fechamento Tarde", // novo
+          startWorkMorning: "Aber. Manhã", // novo
+          endWorkMorning: "Fech. Manhã", // novo
+          startWorkAfternoon: "Aber. Tarde", // novo
+          endWorkAfternoon: "Fech. Tarde", // novo
           absenceMessage: "Mensagem de ausência",
         },
         buttons: {
@@ -433,7 +433,7 @@ const messages = {
           greeting: "Mensagem de saudação",
           actions: "Ações",
           startWorkMorning: "Abertura Manhã", // alterado
-          endWorkMorning: "Fechamento (Manhã", // alterado
+          endWorkMorning: "Fechamento Manhã", // alterado
           startWorkAfternoon: "Abertura Tarde", // novo
           endWorkAfternoon: "Fechamento Tarde", // novo
         },
