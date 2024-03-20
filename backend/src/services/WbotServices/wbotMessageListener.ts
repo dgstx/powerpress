@@ -237,36 +237,50 @@ const verifyQueue = async (
 
   if (choosenQueue) {
     const Hr = new Date();
-
     const hh: number = Hr.getHours() * 60 * 60;
     const mm: number = Hr.getMinutes() * 60;
     const hora = hh + mm;
 
-    const inicio: string = choosenQueue.startWork;
-    const hhinicio = Number(inicio.split(":")[0]) * 60 * 60;
-    const mminicio = Number(inicio.split(":")[1]) * 60;
-    const horainicio = hhinicio + mminicio;
+    const inicioManha: string = choosenQueue.startWorkMorning;
+    const hhInicioManha = Number(inicioManha.split(":"[0])) * 60 * 60;
+    const mmInicioManha = Number(inicioManha.split(":"[1])) * 60;
+    const horaInicioManha = hhInicioManha + mmInicioManha;
 
-    const termino: string = choosenQueue.endWork;
-    const hhtermino = Number(termino.split(":")[0]) * 60 * 60;
-    const mmtermino = Number(termino.split(":")[1]) * 60;
-    const horatermino = hhtermino + mmtermino;
+    const terminoManha: string = choosenQueue.endWorkMorning;
+    const hhTerminoManha = Number(terminoManha.split(":"[0])) * 60 * 60;
+    const mmTerminoManha = Number(terminoManha.split(":"[1])) * 60;
+    const horaTerminoManha = hhTerminoManha + mmTerminoManha;
 
-    if (hora < horainicio || hora > horatermino) {
-      const body = formatBody(`\u200e${choosenQueue.absenceMessage}`, ticket);
-      const debouncedSentMessage = debounce(
-        async () => {
-          const sentMessage = await wbot.sendMessage(
-            `${contact.number}@c.us`,
-            body
-          );
-          verifyMessage(sentMessage, ticket, contact);
-        },
-        3000,
-        ticket.id
-      );
+    const inicioTarde: string = choosenQueue.startWorkAfternoon;
+    const hhInicioTarde = Number(inicioTarde.split(":"[0])) * 60 * 60;
+    const mmInicioTarde = Number(inicioTarde.split(":"[1])) * 60;
+    const horaInicioTarde = hhInicioTarde + mmInicioTarde;
 
-      debouncedSentMessage();
+    const terminoTarde: string = choosenQueue.endWorkAfternoon;
+    const hhTerminoTarde = Number(terminoTarde.split(":"[0])) * 60 * 60;
+    const mmTerminoTarde = Number(terminoTarde.split(":"[1])) * 60;
+    const horaTerminoTarde = hhTerminoTarde + mmTerminoTarde;
+
+  if (
+    (hora < horaInicioManha || hora > horaTerminoManha) &&
+    (hora < horaInicioTarde || hora > horaTerminoTarde)
+  ) {
+    const body = formatBody(`\u200e${choosenQueue.absenceMessage}`, ticket);
+
+    const debouncedSentMessage = debounce(
+      async () => {
+        const sentMessage = await wbot.sendMessage(
+          `${contact.number}@c.us`,
+          body
+        );
+
+        verifyMessage(sentMessage, ticket, contact);
+      },
+      3000,
+      ticket.id
+    );
+
+    debouncedSentMessage();
     } else {
       await UpdateTicketService({
         ticketData: { queueId: choosenQueue.id },
