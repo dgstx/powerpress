@@ -217,16 +217,16 @@ const Queues = () => {
                 {i18n.t("queues.table.greeting")}
               </TableCell>
               <TableCell align="center">
-                {i18n.t("queues.startWorkMorning")}
+                {i18n.t("queues.table.startWorkMorning")}
               </TableCell>
               <TableCell align="center">
-                {i18n.t("queues.endWorkMorning")}
+                {i18n.t("queues.table.endWorkMorning")}
               </TableCell>
               <TableCell align="center">
-                {i18n.t("queues.startWorkAfternoon")}
+                {i18n.t("queues.table.startWorkAfternoon")}
               </TableCell>
               <TableCell align="center">
-                {i18n.t("queues.endWorkAfternoon")}
+                {i18n.t("queues.table.endWorkAfternoon")}
               </TableCell>
               <TableCell align="center">
                 {i18n.t("queues.table.actions")}
