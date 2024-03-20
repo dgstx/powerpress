@@ -18,40 +18,40 @@ import { system } from '../../config.json';
 import logo from '../../assets/logo.png';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: '100vh',
-    backgroundImage: 'linear-gradient(to bottom right, #400fa3, #8c52ff)', // Gradiente de fundo moderno
-    padding: theme.spacing(4),
-  },
-  container: {
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(4),
-    borderRadius: theme.shape.borderRadius,
-    boxShadow: theme.shadows[5],
-    maxWidth: 400,
-  },
-  logo: {
-    width: 100,
-    height: '120',
-    marginBottom: theme.spacing(2),
-  },
-  form: {
-    width: '100%',
-    marginTop: theme.spacing(2),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-  copyright: {
-    marginTop: theme.spacing(4),
-    color: theme.palette.text.secondary,
-  },
-}));
-
+    root: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: '100vh',
+      backgroundImage: 'linear-gradient(to bottom right, #4d04a4, #6b62fe)', 
+      padding: theme.spacing(4),
+    },
+    container: {
+      backgroundColor: theme.palette.background.paper,
+      padding: theme.spacing(4),
+      borderRadius: theme.shape.borderRadius,
+      boxShadow: theme.shadows[5],
+      maxWidth: 400,
+    },
+    logo: {
+      width: 300, 
+      height: 'auto', 
+      marginBottom: theme.spacing(2),
+    },
+    form: {
+      width: '100%',
+      marginTop: theme.spacing(2),
+    },
+    submit: {
+      margin: theme.spacing(3, 0, 2),
+    },
+    copyright: {
+      marginTop: theme.spacing(4),
+      color: theme.palette.text.secondary,
+    },
+  }));
+  
 const Login = () => {
   const classes = useStyles();
   const [user, setUser] = useState({ email: '', password: '' });
@@ -72,7 +72,7 @@ const Login = () => {
       <Container className={classes.container} maxWidth="xs">
         <Box display="flex" flexDirection="column" alignItems="center">
           <img src={logo} alt="Logo" className={classes.logo} />
-          <Typography component="h1" variant="h5" gutterBottom>
+          <Typography component="h1" variant="h6" gutterBottom>
             {i18n.t('login.title')}
           </Typography>
         </Box>
