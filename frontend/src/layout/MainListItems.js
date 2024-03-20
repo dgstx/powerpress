@@ -122,10 +122,10 @@ const MainListItems = (props) => {
     }, [whatsApps]);
 
     return (
-        <div onClick={drawerClose} style={{ overflowY: "auto", maxHeight: "calc(100vh - 64px)" }}>
-            <List>
+    <div onClick={drawerClose}>
+            <List style={{ overflowY: 'auto', maxHeight: 'calc(100vh - 64px)' }}>
                 <ListSubheader inset className={classes.subheader}>
-                    {i18n.t("mainDrawer.listItems.attendance")}
+                    Atendimento
                 </ListSubheader>
                 <ListItemLink to="/" primary="Dashboard" icon={<DashboardOutlined />} />
                 <ListItemLink
