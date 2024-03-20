@@ -8,8 +8,10 @@ interface QueueData {
   name?: string;
   color?: string;
   greetingMessage?: string;
-  startWork?: string;
-  endWork?: string;
+  startWorkMorning?: string;
+  endWorkMorning?: string;
+  startWorkAfternoon?: string;
+  endWorkAfternoon?: string;
   absenceMessage?: string;
 }
 

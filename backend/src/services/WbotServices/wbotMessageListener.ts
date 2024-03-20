@@ -291,19 +291,29 @@ const verifyQueue = async (
     const chat = await msg.getChat();
     await chat.sendStateTyping();
 
-    queues.forEach((queue, index) => {
-      if (queue.startWork && queue.endWork) {
-        if (isDisplay) {
-          options += `*${index + 1}* - ${queue.name} das ${
-            queue.startWork
-          } as ${queue.endWork}\n`;
-        } else {
-          options += `*${index + 1}* - ${queue.name}\n`;
-        }
+   queues.forEach((queue, index) => {
+    if (queue.startWorkMorning && queue.endWorkMorning && queue.startWorkAfternoon && queue.endWorkAfternoon) {
+      if (isDisplay) {
+       options += `*${index + 1}* - ${queue.name} das ${queue.startWorkMorning} às ${queue.endWorkMorning} e das ${queue.startWorkAfternoon} às ${queue.endWorkAfternoon}\n`;
       } else {
         options += `*${index + 1}* - ${queue.name}\n`;
       }
-    });
+    } else if (queue.startWorkMorning && queue.endWorkMorning) {
+      if (isDisplay) {
+      options += `*${index + 1}* - ${queue.name} das ${queue.startWorkMorning} às ${queue.endWorkMorning}\n`;
+      } else {
+      options += `*${index + 1}* - ${queue.name}\n`;
+      }
+    } else if (queue.startWorkAfternoon && queue.endWorkAfternoon) {
+     if (isDisplay) {
+      options += `*${index + 1}* - ${queue.name} das ${queue.startWorkAfternoon} às ${queue.endWorkAfternoon}\n`;
+      } else {
+      options += `*${index + 1}* - ${queue.name}\n`;
+      }
+    } else {
+      options += `*${index + 1}* - ${queue.name}\n`;
+    }
+   });
 
     const body = formatBody(`\u200e${greetingMessage}\n\n${options}`, ticket);
 
