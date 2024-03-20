@@ -234,44 +234,54 @@ const verifyQueue = async (
   const selectedOption = msg.body;
 
   const choosenQueue = queues[+selectedOption - 1];
-  
+
   if (choosenQueue) {
     const Hr = new Date();
-    const hora = Hr.getHours() * 60 * 60 + Hr.getMinutes() * 60;
-  
-    const inicioManha = choosenQueue.startWorkMorning.split(":");
-    const horaInicioManha = +inicioManha[0] * 60 * 60 + +inicioManha[1] * 60;
-  
-    const terminoManha = choosenQueue.endWorkMorning.split(":");
-    const horaTerminoManha = +terminoManha[0] * 60 * 60 + +terminoManha[1] * 60;
-  
-    const inicioTarde = choosenQueue.startWorkAfternoon.split(":");
-    const horaInicioTarde = +inicioTarde[0] * 60 * 60 + +inicioTarde[1] * 60;
-  
-    const terminoTarde = choosenQueue.endWorkAfternoon.split(":");
-    const horaTerminoTarde = +terminoTarde[0] * 60 * 60 + +terminoTarde[1] * 60;
-  
-    if ((hora < horaInicioManha || hora > horaTerminoManha) &&
-        (hora < horaInicioTarde || hora > horaTerminoTarde)) {
-      const body = formatBody(`\u200e${choosenQueue.absenceMessage}`, ticket);
-  
-      const debouncedSentMessage = debounce(
-        async () => {
-          const sentMessage = await wbot.sendMessage(
-            `${contact.number}@c.us`,
-            body
-          );
-  
-          verifyMessage(sentMessage, ticket, contact);
-        },
-        3000,
-        ticket.id
-      );
-  
-      debouncedSentMessage();
-    }
-  }
-   
+    const hh: number = Hr.getHours() * 60 * 60;
+    const mm: number = Hr.getMinutes() * 60;
+    const hora = hh + mm;
+
+    const inicioManha: string = choosenQueue.startWorkMorning;
+    const hhInicioManha = Number(inicioManha.split(":"[0])) * 60 * 60;
+    const mmInicioManha = Number(inicioManha.split(":"[1])) * 60;
+    const horaInicioManha = hhInicioManha + mmInicioManha;
+
+    const terminoManha: string = choosenQueue.endWorkMorning;
+    const hhTerminoManha = Number(terminoManha.split(":"[0])) * 60 * 60;
+    const mmTerminoManha = Number(terminoManha.split(":"[1])) * 60;
+    const horaTerminoManha = hhTerminoManha + mmTerminoManha;
+
+    const inicioTarde: string = choosenQueue.startWorkAfternoon;
+    const hhInicioTarde = Number(inicioTarde.split(":"[0])) * 60 * 60;
+    const mmInicioTarde = Number(inicioTarde.split(":"[1])) * 60;
+    const horaInicioTarde = hhInicioTarde + mmInicioTarde;
+
+    const terminoTarde: string = choosenQueue.endWorkAfternoon;
+    const hhTerminoTarde = Number(terminoTarde.split(":"[0])) * 60 * 60;
+    const mmTerminoTarde = Number(terminoTarde.split(":"[1])) * 60;
+    const horaTerminoTarde = hhTerminoTarde + mmTerminoTarde;
+
+  if (
+    (hora < horaInicioManha || hora > horaTerminoManha) ||
+    (hora < horaInicioTarde || hora > horaTerminoTarde)
+  ) {
+    const body = formatBody(`\u200e${choosenQueue.absenceMessage}`, ticket);
+
+    const debouncedSentMessage = debounce(
+      async () => {
+        const sentMessage = await wbot.sendMessage(
+          `${contact.number}@c.us`,
+          body
+        );
+
+        verifyMessage(sentMessage, ticket, contact);
+      },
+      3000,
+      ticket.id
+    );
+
+    debouncedSentMessage();
+    } 
     
     else {
       await UpdateTicketService({
