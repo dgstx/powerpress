@@ -165,337 +165,342 @@ const verifyMediaMessage = async (
   };
 
   await ticket.update({ lastMessage: msg.body || media.filename });
-  const newMessage = await CreateMessageService({ messageData });
+    const newMessage = await CreateMessageService({ messageData });
 
-  return newMessage;
-};
-
-const prepareLocation = (msg: WbotMessage): WbotMessage => {
-  const gmapsUrl = `https://maps.google.com/maps?q=${msg.location.latitude}%2C${msg.location.longitude}&z=17`;
-  msg.body = `data:image/png;base64,${msg.body}|${gmapsUrl}`;
-  msg.body += `|${
-    msg.location.options
-      ? msg.location.options
-      : `${msg.location.latitude}, ${msg.location.longitude}`
-  }`;
-  return msg;
-};
-
-const verifyMessage = async (
-  msg: WbotMessage,
-  ticket: Ticket,
-  contact: Contact
-) => {
-  if (msg.type === "location") msg = prepareLocation(msg);
-
-  const quotedMsg = await verifyQuotedMessage(msg);
-  const messageData = {
-    id: msg.id.id,
-    ticketId: ticket.id,
-    contactId: msg.fromMe ? undefined : contact.id,
-    body: msg.body,
-    fromMe: msg.fromMe,
-    mediaType: msg.type,
-    read: msg.fromMe,
-    quotedMsgId: quotedMsg?.id
+    return newMessage;
   };
 
-  await ticket.update({
-    lastMessage:
-      msg.type === "location"
+  const prepareLocation = (msg: WbotMessage): WbotMessage => {
+    const gmapsUrl = `https://maps.google.com/maps?q=${msg.location.latitude}%2C${msg.location.longitude}&z=17`;
+    msg.body = `data:image/png;base64,${msg.body}|${gmapsUrl}`;
+    msg.body += `|${
+      msg.location.options
         ? msg.location.options
-          ? `Localization - ${msg.location.options}`
-          : "Localization"
-        : msg.body
-  });
+        : `${msg.location.latitude}, ${msg.location.longitude}`
+    }`;
+    return msg;
+  };
 
-  await CreateMessageService({ messageData });
-};
+  const verifyMessage = async (
+    msg: WbotMessage,
+    ticket: Ticket,
+    contact: Contact
+  ) => {
+    if (msg.type === "location") msg = prepareLocation(msg);
 
-const verifyQueue = async (
-  wbot: Session,
-  msg: WbotMessage,
-  ticket: Ticket,
-  contact: Contact
-) => {
-  const { queues, greetingMessage, isDisplay } = await ShowWhatsAppService(
-    wbot.id!
-  );
+    const quotedMsg = await verifyQuotedMessage(msg);
+    const messageData = {
+      id: msg.id.id,
+      ticketId: ticket.id,
+      contactId: msg.fromMe ? undefined : contact.id,
+      body: msg.body,
+      fromMe: msg.fromMe,
+      mediaType: msg.type,
+      read: msg.fromMe,
+      quotedMsgId: quotedMsg?.id
+    };
 
-  if (queues.length === 1) {
-    await UpdateTicketService({
-      ticketData: { queueId: queues[0].id },
-      ticketId: ticket.id
+    await ticket.update({
+      lastMessage:
+        msg.type === "location"
+          ? msg.location.options
+            ? `Localization - ${msg.location.options}`
+            : "Localization"
+          : msg.body
     });
 
-    return;
-  }
+    await CreateMessageService({ messageData });
+  };
 
-  const selectedOption = msg.body;
+  const verifyQueue = async (
+    wbot: Session,
+    msg: WbotMessage,
+    ticket: Ticket,
+    contact: Contact
+  ) => {
+    const { queues, greetingMessage, isDisplay } = await ShowWhatsAppService(
+      wbot.id!
+    );
 
-  const choosenQueue = queues[+selectedOption - 1];
+    if (queues.length === 1) {
+      await UpdateTicketService({
+        ticketData: { queueId: queues[0].id },
+        ticketId: ticket.id
+      });
 
-  if (choosenQueue) {
-    const Hr = new Date();
-    const hh: number = Hr.getHours() * 60 * 60;
-    const mm: number = Hr.getMinutes() * 60;
-    const hora = hh + mm;
+      return;
+    }
 
-    const inicioManha: string = choosenQueue.startWorkMorning;
-    const hhInicioManha = Number(inicioManha.split(":"[0])) * 60 * 60;
-    const mmInicioManha = Number(inicioManha.split(":"[1])) * 60;
-    const horaInicioManha = hhInicioManha + mmInicioManha;
+    const selectedOption = msg.body;
 
-    const terminoManha: string = choosenQueue.endWorkMorning;
-    const hhTerminoManha = Number(terminoManha.split(":"[0])) * 60 * 60;
-    const mmTerminoManha = Number(terminoManha.split(":"[1])) * 60;
-    const horaTerminoManha = hhTerminoManha + mmTerminoManha;
+    const choosenQueue = queues[+selectedOption - 1];
 
-    const inicioTarde: string = choosenQueue.startWorkAfternoon;
-    const hhInicioTarde = Number(inicioTarde.split(":"[0])) * 60 * 60;
-    const mmInicioTarde = Number(inicioTarde.split(":"[1])) * 60;
-    const horaInicioTarde = hhInicioTarde + mmInicioTarde;
+    if (choosenQueue) {
+      const Hr = new Date();
+      const hh: number = Hr.getHours() * 60 * 60;
+      const mm: number = Hr.getMinutes() * 60;
+      const hora = hh + mm;
 
-    const terminoTarde: string = choosenQueue.endWorkAfternoon;
-    const hhTerminoTarde = Number(terminoTarde.split(":"[0])) * 60 * 60;
-    const mmTerminoTarde = Number(terminoTarde.split(":"[1])) * 60;
-    const horaTerminoTarde = hhTerminoTarde + mmTerminoTarde;
+      const inicioManha: string = choosenQueue.startWorkMorning;
+      const hhInicioManha = Number(inicioManha.split(":")[0]) * 60 * 60;
+      const mmInicioManha = Number(inicioManha.split(":")[1]) * 60;
+      const horaInicioManha = hhInicioManha + mmInicioManha;
 
-  if (
-    (hora < horaInicioManha || hora > horaTerminoManha) &&
-    (hora < horaInicioTarde || hora > horaTerminoTarde)
-  ) {
-    const body = formatBody(`\u200e${choosenQueue.absenceMessage}`, ticket);
+      const terminoManha: string = choosenQueue.endWorkMorning;
+      const hhTerminoManha = Number(terminoManha.split(":")[0]) * 60 * 60;
+      const mmTerminoManha = Number(terminoManha.split(":")[1]) * 60;
+      const horaTerminoManha = hhTerminoManha + mmTerminoManha;
 
-    const debouncedSentMessage = debounce(
-      async () => {
+      const inicioTarde: string = choosenQueue.startWorkAfternoon;
+      const hhInicioTarde = Number(inicioTarde.split(":")[0]) * 60 * 60;
+      const mmInicioTarde = Number(inicioTarde.split(":")[1]) * 60;
+      const horaInicioTarde = hhInicioTarde + mmInicioTarde;
+
+      const terminoTarde: string = choosenQueue.endWorkAfternoon;
+      const hhTerminoTarde = Number(terminoTarde.split(":")[0]) * 60 * 60;
+      const mmTerminoTarde = Number(terminoTarde.split(":")[1]) * 60;
+      const horaTerminoTarde = hhTerminoTarde + mmTerminoTarde;
+
+      if (
+        (hora < horaInicioManha || hora > horaTerminoManha) &&
+        (hora < horaInicioTarde || hora > horaTerminoTarde)
+      ) {
+        const body = formatBody(`\u200e${choosenQueue.absenceMessage}`, ticket);
+
+        const debouncedSentMessage = debounce(
+          async () => {
+            const sentMessage = await wbot.sendMessage(
+              `${contact.number}@c.us`,
+              body
+            );
+
+            verifyMessage(sentMessage, ticket, contact);
+          },
+          3000,
+          ticket.id
+        );
+
+        debouncedSentMessage();
+      } else {
+        await UpdateTicketService({
+          ticketData: { queueId: choosenQueue.id },
+          ticketId: ticket.id
+        });
+
+        const chat = await msg.getChat();
+        await chat.sendStateTyping();
+
+        const body = formatBody(`\u200e${choosenQueue.greetingMessage}`, ticket);
+
         const sentMessage = await wbot.sendMessage(
           `${contact.number}@c.us`,
           body
         );
 
-        verifyMessage(sentMessage, ticket, contact);
-      },
-      3000,
-      ticket.id
-    );
-
-    debouncedSentMessage();
+        await verifyMessage(sentMessage, ticket, contact);
+      }
     } else {
-      await UpdateTicketService({
-        ticketData: { queueId: choosenQueue.id },
-        ticketId: ticket.id
-      });
+      let options = "";
 
       const chat = await msg.getChat();
       await chat.sendStateTyping();
 
-      const body = formatBody(`\u200e${choosenQueue.greetingMessage}`, ticket);
+      queues.forEach((queue, index) => {
+        if (
+          queue.startWorkMorning &&
+          queue.endWorkMorning &&
+          queue.startWorkAfternoon &&
+          queue.endWorkAfternoon
+        ) {
+          if (isDisplay) {
+            options += `*${index + 1}* - ${queue.name} das ${queue.startWorkMorning} às ${queue.endWorkMorning} e das ${queue.startWorkAfternoon} às ${queue.endWorkAfternoon}\n`;
+          } else {
+            options += `*${index + 1}* - ${queue.name}\n`;
+          }
+        } else if (queue.startWorkMorning && queue.endWorkMorning) {
+          if (isDisplay) {
+            options += `*${index + 1}* - ${queue.name} das ${queue.startWorkMorning} às ${queue.endWorkMorning}\n`;
+          } else {
+            options += `*${index + 1}* - ${queue.name}\n`;
+          }
+        } else if (queue.startWorkAfternoon && queue.endWorkAfternoon) {
+          if (isDisplay) {
+            options += `*${index + 1}* - ${queue.name} das ${queue.startWorkAfternoon} às ${queue.endWorkAfternoon}\n`;
+          } else {
+            options += `*${index + 1}* - ${queue.name}\n`;
+          }
+        } else {
+          options += `*${index + 1}* - ${queue.name}\n`;
+        }
+      });
 
-      const sentMessage = await wbot.sendMessage(
-        `${contact.number}@c.us`,
-        body
+      const body = formatBody(`\u200e${greetingMessage}\n\n${options}`, ticket);
+
+      const debouncedSentMessage = debounce(
+        async () => {
+          const sentMessage = await wbot.sendMessage(
+            `${contact.number}@c.us`,
+            body
+          );
+          verifyMessage(sentMessage, ticket, contact);
+        },
+        3000,
+        ticket.id
       );
 
-      await verifyMessage(sentMessage, ticket, contact);
+      debouncedSentMessage();
     }
-  } else {
-    let options = "";
+  };
 
-    const chat = await msg.getChat();
-    await chat.sendStateTyping();
-
-    queues.forEach((queue, index) => {
-      if (queue.startWorkMorning && queue.endWorkMorning && queue.startWorkAfternoon && queue.endWorkAfternoon) {
-          if (isDisplay) {
-              options += `*${index + 1}* - ${queue.name} das ${queue.startWorkMorning} às ${queue.endWorkMorning} e das ${queue.startWorkAfternoon} às ${queue.endWorkAfternoon}\n`;
-          } else {
-              options += `*${index + 1}* - ${queue.name}\n`;
-          }
-      } else if (queue.startWorkMorning && queue.endWorkMorning) {
-          if (isDisplay) {
-              options += `*${index + 1}* - ${queue.name} das ${queue.startWorkMorning} às ${queue.endWorkMorning}\n`;
-          } else {
-              options += `*${index + 1}* - ${queue.name}\n`;
-          }
-      } else if (queue.startWorkAfternoon && queue.endWorkAfternoon) {
-          if (isDisplay) {
-              options += `*${index + 1}* - ${queue.name} das ${queue.startWorkAfternoon} às ${queue.endWorkAfternoon}\n`;
-          } else {
-              options += `*${index + 1}* - ${queue.name}\n`;
-          }
-      } else {
-          options += `*${index + 1}* - ${queue.name}\n`;
-      }
-  });
-
-    const body = formatBody(`\u200e${greetingMessage}\n\n${options}`, ticket);
-
-    const debouncedSentMessage = debounce(
-      async () => {
-        const sentMessage = await wbot.sendMessage(
-          `${contact.number}@c.us`,
-          body
-        );
-        verifyMessage(sentMessage, ticket, contact);
-      },
-      3000,
-      ticket.id
-    );
-
-    debouncedSentMessage();
-  }
-};
-
-const isValidMsg = (msg: WbotMessage): boolean => {
-  if (msg.from === "status@broadcast") return false;
-  if (
-    msg.type === "chat" ||
-    msg.type === "audio" ||
-    msg.type === "ptt" ||
-    msg.type === "video" ||
-    msg.type === "image" ||
-    msg.type === "document" ||
-    msg.type === "vcard" ||
-    msg.type === "call_log" ||
-    // msg.type === "multi_vcard" ||
-    msg.type === "sticker" ||
-    msg.type === "e2e_notification" || // Ignore Empty Messages Generated When Someone Changes His Account from Personal to Business or vice-versa
-    msg.type === "notification_template" || // Ignore Empty Messages Generated When Someone Changes His Account from Personal to Business or vice-versa
-    msg.author !== null || // Ignore Group Messages
-    msg.type === "location"
-  )
-    return true;
-  return false;
-};
-
-const handleMessage = async (
-  msg: WbotMessage,
-  wbot: Session
-): Promise<void> => {
-  if (!isValidMsg(msg)) {
-    return;
-  }
-
-  const Integrationdb = await Integration.findOne({
-    where: { key: "urlApiN8N" }
-  });
-
-  if (Integrationdb?.value) {
-    const options = {
-      method: "POST",
-      url: Integrationdb?.value,
-      headers: {
-        "Content-Type": "application/json"
-      },
-      json: msg
-    };
-    try {
-      const response = await request(options);
-      console.log(response.body);
-    } catch (error) {
-      throw new Error(error);
-    }
-  }
-
-  // IGNORAR MENSAGENS DE GRUPO
-  const Settingdb = await Settings.findOne({
-    where: { key: "CheckMsgIsGroup" }
-  });
-  if (Settingdb?.value === "enabled") {
-    const chat = await msg.getChat();
+  const isValidMsg = (msg: WbotMessage): boolean => {
+    if (msg.from === "status@broadcast") return false;
     if (
+      msg.type === "chat" ||
+      msg.type === "audio" ||
+      msg.type === "ptt" ||
+      msg.type === "video" ||
+      msg.type === "image" ||
+      msg.type === "document" ||
+      msg.type === "vcard" ||
+      msg.type === "call_log" ||
+      // msg.type === "multi_vcard" ||
       msg.type === "sticker" ||
-      msg.type === "e2e_notification" ||
-      msg.type === "notification_template" ||
-      msg.from === "status@broadcast" ||
-      msg.author != null ||
-      chat.isGroup
-    ) {
+      msg.type === "e2e_notification" || // Ignore Empty Messages Generated When Someone Changes His Account from Personal to Business or vice-versa
+      msg.type === "notification_template" || // Ignore Empty Messages Generated When Someone Changes His Account from Personal to Business or vice-versa
+      msg.author !== null || // Ignore Group Messages
+      msg.type === "location"
+    )
+      return true;
+    return false;
+  };
+
+  const handleMessage = async (
+    msg: WbotMessage,
+    wbot: Session
+  ): Promise<void> => {
+    if (!isValidMsg(msg)) {
       return;
     }
-  }
-  // IGNORAR MENSAGENS DE GRUPO
 
-  try {
-    let msgContact: WbotContact;
-    let groupContact: Contact | undefined;
+    const Integrationdb = await Integration.findOne({
+      where: { key: "urlApiN8N" }
+    });
 
-    if (msg.fromMe) {
-      // messages sent automatically by wbot have a special character in front of it
-      // if so, this message was already been stored in database;
-      if (/\u200e/.test(msg.body[0])) return;
+    if (Integrationdb?.value) {
+      const options = {
+        method: "POST",
+        url: Integrationdb?.value,
+        headers: {
+          "Content-Type": "application/json"
+        },
+        json: msg
+      };
+      try {
+        const response = await request(options);
+        console.log(response.body);
+      } catch (error) {
+        throw new Error(error);
+      }
+    }
 
-      // media messages sent from me from cell phone, first comes with "hasMedia = false" and type = "image/ptt/etc"
-      // in this case, return and let this message be handled by "media_uploaded" event, when it will have "hasMedia = true"
+    // IGNORAR MENSAGENS DE GRUPO
+    const Settingdb = await Settings.findOne({
+      where: { key: "CheckMsgIsGroup" }
+    });
+    if (Settingdb?.value === "enabled") {
+      const chat = await msg.getChat();
+      if (
+        msg.type === "sticker" ||
+        msg.type === "e2e_notification" ||
+        msg.type === "notification_template" ||
+        msg.from === "status@broadcast" ||
+        msg.author != null ||
+        chat.isGroup
+      ) {
+        return;
+      }
+    }
+    // IGNORAR MENSAGENS DE GRUPO
+
+    try {
+      let msgContact: WbotContact;
+      let groupContact: Contact | undefined;
+
+      if (msg.fromMe) {
+        // messages sent automatically by wbot have a special character in front of it
+        // if so, this message was already been stored in database;
+        if (/\u200e/.test(msg.body[0])) return;
+
+        // media messages sent from me from cell phone, first comes with "hasMedia = false" and type = "image/ptt/etc"
+        // in this case, return and let this message be handled by "media_uploaded" event, when it will have "hasMedia = true"
+
+        if (
+          !msg.hasMedia &&
+          msg.type !== "location" &&
+          msg.type !== "chat" &&
+          msg.type !== "vcard"
+          //  && msg.type !== "multi_vcard"
+        )
+          return;
+
+        msgContact = await wbot.getContactById(msg.to);
+      } else {
+        const listSettingsService = await ListSettingsServiceOne({ key: "call" });
+        var callSetting = listSettingsService?.value;
+
+        msgContact = await msg.getContact();
+      }
+
+      const chat = await msg.getChat();
+
+      if (chat.isGroup) {
+        let msgGroupContact;
+
+        if (msg.fromMe) {
+          msgGroupContact = await wbot.getContactById(msg.to);
+        } else {
+          msgGroupContact = await wbot.getContactById(msg.from);
+        }
+
+        groupContact = await verifyContact(msgGroupContact);
+      }
+      const whatsapp = await ShowWhatsAppService(wbot.id!);
+
+      const unreadMessages = msg.fromMe ? 0 : chat.unreadCount;
+
+      const contact = await verifyContact(msgContact);
+
+      let ticket = await FindOrCreateTicketService(
+        contact,
+        wbot.id!,
+        unreadMessages,
+        groupContact
+      );
 
       if (
-        !msg.hasMedia &&
-        msg.type !== "location" &&
-        msg.type !== "chat" &&
-        msg.type !== "vcard"
-        //  && msg.type !== "multi_vcard"
+        unreadMessages === 0 &&
+        whatsapp.farewellMessage &&
+        formatBody(whatsapp.farewellMessage, ticket) === msg.body
       )
         return;
 
-      msgContact = await wbot.getContactById(msg.to);
-    } else {
-      const listSettingsService = await ListSettingsServiceOne({ key: "call" });
-      var callSetting = listSettingsService?.value;
+      ticket = await FindOrCreateTicketService(
+        contact,
+        wbot.id!,
+        unreadMessages,
+        groupContact
+      );
 
-      msgContact = await msg.getContact();
-    }
-
-    const chat = await msg.getChat();
-
-    if (chat.isGroup) {
-      let msgGroupContact;
-
-      if (msg.fromMe) {
-        msgGroupContact = await wbot.getContactById(msg.to);
+      if (msg.hasMedia) {
+        await verifyMediaMessage(msg, ticket, contact);
       } else {
-        msgGroupContact = await wbot.getContactById(msg.from);
+        await verifyMessage(msg, ticket, contact);
       }
 
-      groupContact = await verifyContact(msgGroupContact);
-    }
-    const whatsapp = await ShowWhatsAppService(wbot.id!);
-
-    const unreadMessages = msg.fromMe ? 0 : chat.unreadCount;
-
-    const contact = await verifyContact(msgContact);
-
-    let ticket = await FindOrCreateTicketService(
-      contact,
-      wbot.id!,
-      unreadMessages,
-      groupContact
-    );
-
-    if (
-      unreadMessages === 0 &&
-      whatsapp.farewellMessage &&
-      formatBody(whatsapp.farewellMessage, ticket) === msg.body
-    )
-      return;
-
-    ticket = await FindOrCreateTicketService(
-      contact,
-      wbot.id!,
-      unreadMessages,
-      groupContact
-    );
-
-    if (msg.hasMedia) {
-      await verifyMediaMessage(msg, ticket, contact);
-    } else {
-      await verifyMessage(msg, ticket, contact);
-    }
-
-    if (
-      !ticket.queue &&
-      !chat.isGroup &&
-      !msg.fromMe &&
+      if (
+        !ticket.queue &&
+        !chat.isGroup &&
+        !msg.fromMe &&
       !ticket.userId &&
       whatsapp.queues.length >= 1
     ) {
