@@ -261,9 +261,8 @@ const verifyQueue = async (
     const mmTerminoTarde = Number(terminoTarde.split(":"[1])) * 60;
     const horaTerminoTarde = hhTerminoTarde + mmTerminoTarde;
 
-  if (
-    (hora < horaInicioManha || hora > horaTerminoManha)
-  ) {
+  if (hora < horaInicioManha || hora > horaTerminoManha)
+   {
     const body = formatBody(`\u200e${choosenQueue.absenceMessage}`, ticket);
 
     const debouncedSentMessage = debounce(
