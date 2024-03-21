@@ -262,8 +262,7 @@ const verifyQueue = async (
     const horaTerminoTarde = hhTerminoTarde + mmTerminoTarde;
 
   if (
-    (hora < horaInicioManha || hora > horaTerminoManha) ||
-    (hora < horaInicioTarde || hora > horaTerminoTarde)
+    (hora < horaInicioManha || hora > horaTerminoManha)
   ) {
     const body = formatBody(`\u200e${choosenQueue.absenceMessage}`, ticket);
 
