@@ -309,8 +309,21 @@ const verifyMediaMessage = async (
           options += `*${index + 1}* - ${queue.name}\n`;
         }
       });
+      const body = formatBody(`\u200e${greetingMessage}\n\n${options}`, ticket);
+      const debouncedSentMessage = debounce(
+        async () => {
+          const sentMessage = await wbot.sendMessage(
+            `${contact.number}@c.us`,
+            body
+          );
+          verifyMessage(sentMessage, ticket, contact);
+        },
+        3000,
+        ticket.id
+      );
       debouncedSentMessage();
     }
+  };
     
 
   const isValidMsg = (msg: WbotMessage): boolean => {
