@@ -234,35 +234,28 @@ const verifyMediaMessage = async (
     const choosenQueue = queues[+selectedOption - 1];
   
     if (choosenQueue) {
-      const Hr = new Date();
-      const hh: number = Hr.getHours() * 60 * 60;
-      const mm: number = Hr.getMinutes() * 60;
-      const hora = hh + mm;
+      const currentHour = new Date().getHours() * 60 + new Date().getMinutes();
   
-      const inicioManha: string = choosenQueue.startWorkMorning;
-      const hhinicioManha = Number(inicioManha.split(":")[0]) * 60 * 60;
-      const mminicioManha = Number(inicioManha.split(":")[1]) * 60;
-      const horainicioManha = hhinicioManha + mminicioManha;
+      const morningStartHour =
+        Number(choosenQueue.startWorkMorning.split(":")[0]) * 60 +
+        Number(choosenQueue.startWorkMorning.split(":")[1]);
+      const morningEndHour =
+        Number(choosenQueue.endWorkMorning.split(":")[0]) * 60 +
+        Number(choosenQueue.endWorkMorning.split(":")[1]);
   
-      const terminoManha: string = choosenQueue.endWorkMorning;
-      const hhterminoManha = Number(terminoManha.split(":")[0]) * 60 * 60;
-      const mmterminoManha = Number(terminoManha.split(":")[1]) * 60;
-      const horaterminoManha = hhterminoManha + mmterminoManha;
+      const afternoonStartHour =
+        Number(choosenQueue.startWorkAfternoon.split(":")[0]) * 60 +
+        Number(choosenQueue.startWorkAfternoon.split(":")[1]);
+      const afternoonEndHour =
+        Number(choosenQueue.endWorkAfternoon.split(":")[0]) * 60 +
+        Number(choosenQueue.endWorkAfternoon.split(":")[1]);
   
-      const inicioTarde: string = choosenQueue.startWorkAfternoon;
-      const hhinicioTarde = Number(inicioTarde.split(":")[0]) * 60 * 60;
-      const mminicioTarde = Number(inicioTarde.split(":")[1]) * 60;
-      const horainicioTarde = hhinicioTarde + mminicioTarde;
+      const isWithinMorningHours =
+        currentHour >= morningStartHour && currentHour <= morningEndHour;
+      const isWithinAfternoonHours =
+        currentHour >= afternoonStartHour && currentHour <= afternoonEndHour;
   
-      const terminoTarde: string = choosenQueue.endWorkAfternoon;
-      const hhterminoTarde = Number(terminoTarde.split(":")[0]) * 60 * 60;
-      const mmterminoTarde = Number(terminoTarde.split(":")[1]) * 60;
-      const horaterminoTarde = hhterminoTarde + mmterminoTarde;
-  
-      if (
-        (hora >= horainicioManha && hora <= horaterminoManha) ||
-        (hora >= horainicioTarde && hora <= horaterminoTarde)
-      ) {
+      if (isWithinMorningHours || isWithinAfternoonHours) {
         await UpdateTicketService({
           ticketData: { queueId: choosenQueue.id },
           ticketId: ticket.id
@@ -295,7 +288,12 @@ const verifyMediaMessage = async (
       const chat = await msg.getChat();
       await chat.sendStateTyping();
       queues.forEach((queue, index) => {
-        if (queue.startWorkMorning && queue.endWorkMorning && queue.startWorkAfternoon && queue.endWorkAfternoon) {
+        if (
+          queue.startWorkMorning &&
+          queue.endWorkMorning &&
+          queue.startWorkAfternoon &&
+          queue.endWorkAfternoon
+        ) {
           if (isDisplay) {
             options += `*${index + 1}* - ${queue.name} das ${
               queue.startWorkMorning
