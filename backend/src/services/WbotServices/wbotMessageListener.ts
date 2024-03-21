@@ -212,6 +212,35 @@ const verifyMediaMessage = async (
     await CreateMessageService({ messageData });
   };
 
+  const getMessageBySchedule = (queue, currentTime) => {
+    const currentHour = currentTime.getHours() * 60 + currentTime.getMinutes();
+  
+    const morningStartHour =
+      Number(queue.startWorkMorning.split(":")[0]) * 60 +
+      Number(queue.startWorkMorning.split(":")[1]);
+    const morningEndHour =
+      Number(queue.endWorkMorning.split(":")[0]) * 60 +
+      Number(queue.endWorkMorning.split(":")[1]);
+  
+    const afternoonStartHour =
+      Number(queue.startWorkAfternoon.split(":")[0]) * 60 +
+      Number(queue.startWorkAfternoon.split(":")[1]);
+    const afternoonEndHour =
+      Number(queue.endWorkAfternoon.split(":")[0]) * 60 +
+      Number(queue.endWorkAfternoon.split(":")[1]);
+  
+    const isWithinMorningHours =
+      currentHour >= morningStartHour && currentHour <= morningEndHour;
+    const isWithinAfternoonHours =
+      currentHour >= afternoonStartHour && currentHour <= afternoonEndHour;
+  
+    if (isWithinMorningHours || isWithinAfternoonHours) {
+      return queue.greetingMessage;
+    } else {
+      return queue.absenceMessage;
+    }
+  };
+
   const verifyQueue = async (
     wbot: Session,
     msg: WbotMessage,
@@ -234,55 +263,22 @@ const verifyMediaMessage = async (
     const choosenQueue = queues[+selectedOption - 1];
   
     if (choosenQueue) {
-      const currentHour = new Date().getHours() * 60 + new Date().getMinutes();
+      const currentTime = new Date();
+      const messageToSend = getMessageBySchedule(choosenQueue, currentTime);
   
-      const morningStartHour =
-        Number(choosenQueue.startWorkMorning.split(":")[0]) * 60 +
-        Number(choosenQueue.startWorkMorning.split(":")[1]);
-      const morningEndHour =
-        Number(choosenQueue.endWorkMorning.split(":")[0]) * 60 +
-        Number(choosenQueue.endWorkMorning.split(":")[1]);
-  
-      const afternoonStartHour =
-        Number(choosenQueue.startWorkAfternoon.split(":")[0]) * 60 +
-        Number(choosenQueue.startWorkAfternoon.split(":")[1]);
-      const afternoonEndHour =
-        Number(choosenQueue.endWorkAfternoon.split(":")[0]) * 60 +
-        Number(choosenQueue.endWorkAfternoon.split(":")[1]);
-  
-      const isWithinMorningHours =
-        currentHour >= morningStartHour && currentHour <= morningEndHour;
-      const isWithinAfternoonHours =
-        currentHour >= afternoonStartHour && currentHour <= afternoonEndHour;
-  
-      if (isWithinMorningHours || isWithinAfternoonHours) {
-        await UpdateTicketService({
-          ticketData: { queueId: choosenQueue.id },
-          ticketId: ticket.id
-        });
-        const chat = await msg.getChat();
-        await chat.sendStateTyping();
-        const body = formatBody(`\u200e${choosenQueue.greetingMessage}`, ticket);
-        const sentMessage = await wbot.sendMessage(
-          `${contact.number}@c.us`,
-          body
-        );
-        await verifyMessage(sentMessage, ticket, contact);
-      } else {
-        const body = formatBody(`\u200e${choosenQueue.absenceMessage}`, ticket);
-        const debouncedSentMessage = debounce(
-          async () => {
-            const sentMessage = await wbot.sendMessage(
-              `${contact.number}@c.us`,
-              body
-            );
-            verifyMessage(sentMessage, ticket, contact);
-          },
-          3000,
-          ticket.id
-        );
-        debouncedSentMessage();
-      }
+      const body = formatBody(`\u200e${messageToSend}`, ticket);
+      const debouncedSentMessage = debounce(
+        async () => {
+          const sentMessage = await wbot.sendMessage(
+            `${contact.number}@c.us`,
+            body
+          );
+          verifyMessage(sentMessage, ticket, contact);
+        },
+        3000,
+        ticket.id
+      );
+      debouncedSentMessage();
     } else {
       let options = "";
       const chat = await msg.getChat();
