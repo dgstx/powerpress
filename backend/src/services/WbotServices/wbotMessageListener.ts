@@ -283,7 +283,7 @@ const verifyMediaMessage = async (
         });
         const chat = await msg.getChat();
         await chat.sendStateTyping();
-        const body = formatBody(`\u200e${choosenQueue.greetingMessage}`, ticket);
+        const body = formatBody(`\u200e${greetingMessage}`, ticket);
         const sentMessage = await wbot.sendMessage(
           `${contact.number}@c.us`,
           body
