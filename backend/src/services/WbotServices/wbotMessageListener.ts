@@ -260,9 +260,22 @@ const verifyMediaMessage = async (
       const horaterminoTarde = hhterminoTarde + mmterminoTarde;
   
       if (
-        (hora < horainicioManha || hora > horaterminoManha) &&
-        (hora < horainicioTarde || hora > horaterminoTarde)
+        (hora >= horainicioManha && hora <= horaterminoManha) ||
+        (hora >= horainicioTarde && hora <= horaterminoTarde)
       ) {
+        await UpdateTicketService({
+          ticketData: { queueId: choosenQueue.id },
+          ticketId: ticket.id
+        });
+        const chat = await msg.getChat();
+        await chat.sendStateTyping();
+        const body = formatBody(`\u200e${choosenQueue.greetingMessage}`, ticket);
+        const sentMessage = await wbot.sendMessage(
+          `${contact.number}@c.us`,
+          body
+        );
+        await verifyMessage(sentMessage, ticket, contact);
+      } else {
         const body = formatBody(`\u200e${choosenQueue.absenceMessage}`, ticket);
         const debouncedSentMessage = debounce(
           async () => {
@@ -276,19 +289,6 @@ const verifyMediaMessage = async (
           ticket.id
         );
         debouncedSentMessage();
-      } else {
-        await UpdateTicketService({
-          ticketData: { queueId: choosenQueue.id },
-          ticketId: ticket.id
-        });
-        const chat = await msg.getChat();
-        await chat.sendStateTyping();
-        const body = formatBody(`\u200e${greetingMessage}`, ticket);
-        const sentMessage = await wbot.sendMessage(
-          `${contact.number}@c.us`,
-          body
-        );
-        await verifyMessage(sentMessage, ticket, contact);
       }
     } else {
       let options = "";
