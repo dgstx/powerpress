@@ -281,9 +281,7 @@ const verifyQueue = async (
     );
 
     debouncedSentMessage();
-    } 
-    
-    else {
+    } else {
       await UpdateTicketService({
         ticketData: { queueId: choosenQueue.id },
         ticketId: ticket.id
