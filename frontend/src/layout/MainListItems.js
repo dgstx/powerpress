@@ -22,7 +22,7 @@ import {
     PeopleAltOutlined,
     QuestionAnswerOutlined,
     SettingsOutlined,
-    QrCodeScanner,
+    SyncAlt,
     VpnKeyRounded,
     WhatsApp
 } from "@material-ui/icons";
@@ -146,7 +146,7 @@ const MainListItems = (props) => {
                             primary={i18n.t("mainDrawer.listItems.connections")}
                             icon={
                                 <Badge badgeContent={connectionWarning ? "!" : 0} color="error" overlap="rectangular" >
-                                    <QrCodeScanner />
+                                    <SyncAlt />
                                 </Badge>
                             }
                         />
