@@ -27,7 +27,7 @@ import {
     WhatsApp
 } from "@material-ui/icons";
 
-import { HouseDoor, PersonFill, ChatRightQuoteFill, Tag, CameraVideoFill, ColumnsGap, QrCodeScan } from 'bootstrap-icons/icons';
+import { HouseDoor, PersonFill, ChatRightQuoteFill, Tag, CameraVideoFill, ColumnsGap, QrCodeScan } from '@bootstrap-icons/icons';
 
 import { i18n } from "../translate/i18n";
 import { WhatsAppsContext } from "../context/WhatsApp/WhatsAppsContext";
