@@ -1,6 +1,6 @@
 {
   "name": "frontend",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "systemVersion": "1.6.0",
   "private": true,
   "dependencies": {
@@ -10,7 +10,6 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.0.4",
     "@testing-library/user-event": "^12.1.7",
-    "@styled-icons/bootstrap": "^10.47.0",
     "axios": "^0.21.1",
     "date-fns": "^2.16.1",
     "emoji-mart": "^3.0.1",

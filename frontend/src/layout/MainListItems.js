@@ -22,12 +22,11 @@ import {
     PeopleAltOutlined,
     QuestionAnswerOutlined,
     SettingsOutlined,
-    SyncAlt,
+    QrcodeScanIcon,
     VpnKeyRounded,
     WhatsApp
 } from "@material-ui/icons";
 
-import { HouseDoor, PersonFill, ChatRightQuoteFill, Tag, CameraVideoFill, ColumnsGap, QrCodeScan } from 'bootstrap-icons/icons';
 
 import { i18n } from "../translate/i18n";
 import { WhatsAppsContext } from "../context/WhatsApp/WhatsAppsContext";
@@ -148,7 +147,7 @@ const MainListItems = (props) => {
                             primary={i18n.t("mainDrawer.listItems.connections")}
                             icon={
                                 <Badge badgeContent={connectionWarning ? "!" : 0} color="error" overlap="rectangular" >
-                                    <QrCodeScan />
+                                    <QrcodeScanIcon />
                                 </Badge>
                             }
                         />
