@@ -27,6 +27,8 @@ import {
     WhatsApp
 } from "@material-ui/icons";
 
+import {person-vcard} from 'bootstrap-icons/icons';
+
 import { i18n } from "../translate/i18n";
 import { WhatsAppsContext } from "../context/WhatsApp/WhatsAppsContext";
 import { AuthContext } from "../context/Auth/AuthContext";
@@ -120,7 +122,7 @@ const MainListItems = (props) => {
             <ListItemLink
                 to="/contacts"
                 primary={i18n.t("mainDrawer.listItems.contacts")}
-                icon={<ContactPhoneOutlined />}
+                icon={<person-vcard />}
             />
             <ListItemLink
                 to="/quickAnswers"
